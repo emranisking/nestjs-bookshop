@@ -13,7 +13,7 @@ export class AuthorResolver {
     @Args('author_name', { type: () => String, nullable: true }) authorName?: string,
     @Args('email', { type: () => String, nullable: true }) email?: string,
     @Args('page', { type: () => Int, nullable: true }) page = 1,
-    @Args('limit', { type: () => Int, nullable: true }) limit = 10,
+    @Args('limit', { type: () => Int, nullable: true }) limit = 5,
   ): Promise<Author[]> {
     return this.authorService.findAll({ authorName, email, page, limit });
   }
