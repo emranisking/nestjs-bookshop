@@ -57,9 +57,26 @@ export class AuthorService {
   }
 
   // Get all authors
-  async findAll(): Promise<Author[]> {
-    return this.authorRepository.find({ relations: ['books'] });
+// author.service.ts
+async findAll(options: { authorName?: string; email?: string; page?: number; limit?: number }) {
+  const { authorName, email, page = 1, limit = 10 } = options;
+
+  const qb = this.authorRepository.createQueryBuilder('author');
+
+  if (authorName) {
+    qb.andWhere('author.author_name LIKE :authorName', { authorName: `%${authorName}%` });
   }
+
+  if (email) {
+    qb.andWhere('author.email LIKE :email', { email: `%${email}%` });
+  }
+
+  qb.skip((page - 1) * limit).take(limit);
+
+  return qb.getMany();
+}
+
+
 
   // Get single author by id
   async findOne(author_id: number): Promise<Author> {

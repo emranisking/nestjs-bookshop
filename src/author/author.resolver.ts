@@ -3,15 +3,19 @@ import { AuthorService } from './author.service';
 import { Author } from './entities/author.entity';
 import { AddAuthorInput } from './dto/addauthor';
 
-
-@Resolver(of => Author)
+@Resolver(() => Author)
 export class AuthorResolver {
   constructor(private authorService: AuthorService) {}
 
-  // Query to get all authors with their books
+  // Query to get authors with optional filters + pagination
   @Query(() => [Author], { name: 'authors' })
-  async getAuthors(): Promise<Author[]> {
-    return this.authorService.findAll();
+  async getAuthors(
+    @Args('author_name', { type: () => String, nullable: true }) authorName?: string,
+    @Args('email', { type: () => String, nullable: true }) email?: string,
+    @Args('page', { type: () => Int, nullable: true }) page = 1,
+    @Args('limit', { type: () => Int, nullable: true }) limit = 10,
+  ): Promise<Author[]> {
+    return this.authorService.findAll({ authorName, email, page, limit });
   }
 
   // Query to get a single author by ID
@@ -22,18 +26,10 @@ export class AuthorResolver {
     return this.authorService.findOne(id);
   }
 
-  @Query(() => [Author], { name: 'authors' })
-  findAuthors(
-    @Args('author_name', { type: () => String, nullable: true }) author_name?: string,
-    @Args('email', { type: () => String, nullable: true }) email?: string,
-  ): Promise<Author[]> {
-    return this.authorService.findAuthors(author_name, email);
-  }
-
   // Mutation to create an author (optionally with books)
   @Mutation(() => Author, { name: 'addAuthor' })
   async addAuthor(
-@Args('addAuthorInput') addAuthorInput: AddAuthorInput
+    @Args('addAuthorInput') addAuthorInput: AddAuthorInput
   ): Promise<Author> {
     return this.authorService.addAuthor(addAuthorInput);
   }
