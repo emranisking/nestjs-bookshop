@@ -1,0 +1,54 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Book } from './entities/book.entity';
+import { Author } from 'src/author/entities/author.entity';
+import { CreateBookInput } from './dto/create-book-input';
+
+
+@Injectable()
+export class BookService {
+  create(arg0: { author: Author; book_name: string; }) {
+      throw new Error('Method not implemented.');
+  }
+  constructor(
+    @InjectRepository(Book)
+    private bookRepository: Repository<Book>,
+
+    @InjectRepository(Author)
+    private authorRepository: Repository<Author>,
+  ) {}
+
+  // Create a book only if the author exists
+  async addBook(createBookInput: CreateBookInput): Promise<Book> {
+    const { book_name, author_id } = createBookInput;
+
+    // Find the author
+    const author = await this.authorRepository.findOne({ where: { author_id: createBookInput.author_id } });
+
+    if (!author) {
+      throw new NotFoundException(`Author with id ${author_id} not found`);
+    }
+
+    const newBook = this.bookRepository.create({
+      book_name: book_name,
+      author,
+    });
+
+    return this.bookRepository.save(newBook);
+  }
+
+  // Get all books
+  async findAll(): Promise<Book[]> {
+    return this.bookRepository.find({ relations: ['author'] });
+  }
+
+  // Get a single book by ID
+  async findOne(book_id: number): Promise<Book> {
+    const book = await this.bookRepository.findOne({ where: { book_id }, relations: ['author'] });
+    if (!book) {
+      throw new NotFoundException(`Book with id ${book_id} not found`);
+    }
+    return book;
+  }
+}
