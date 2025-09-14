@@ -6,6 +6,7 @@ type Book {
   book_id: Int!
   book_name: String!
   author: Author!
+  publication_date: String!
 }
 
 type Author {

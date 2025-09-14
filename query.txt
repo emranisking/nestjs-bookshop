@@ -1,0 +1,64 @@
+// Query is for creating new author
+mutation {
+  addAuthor(
+    addAuthorInput: {
+      author_name: "tasnia"
+      email: "tasnia5090@gmail.com"
+
+    }
+  ) {
+    author_id
+    author_name
+    email
+
+  }
+}
+
+//Add new book with using author_id
+mutation {
+  addBook(
+    createBookInput: {
+      book_name: "Rich dad & Poor dad"
+      author_id: 2
+    }
+  ) {
+ 
+    book_name
+    publication_date
+
+    }
+  }
+
+//Searching author's name and author email 
+query {
+  authors(author_name: "Emran Ahmed", email: "emranahmed2723@gmail.com") {
+    author_name
+    email
+    books {
+      book_name
+    }
+  }
+}
+
+//Searching author's name and author email also pagination
+query {
+  authors(page: 4, limit: 5) {
+    author_name
+    email
+  }
+}
+
+//Searching books using author_id 
+query {
+  booksByAuthor(author_id: 30) {
+    book_id
+    book_name
+
+  }
+}
+
+
+
+
+
+

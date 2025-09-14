@@ -52,12 +52,17 @@ export class BookService {
     return book;
   }
 
-    async findByAuthor(author_id: number): Promise<Book[]> {
-    return this.bookRepository.find({
-      where: { author: { author_id: author_id } },
-      relations: ['author'], // include author info if needed
-      
+  async findByAuthor(author_id: number): Promise<Book[]> {
+    const correctBooks = await this.bookRepository.find({
+      where: { author: {  author_id } }, // check the correct foreign key
+      relations: ['author'],
     });
+
+    if (correctBooks.length === 0) {
+      throw new NotFoundException(`This author has no books yet.`);
+    }
+
+    return correctBooks;
   }
 
 
