@@ -23,19 +23,28 @@ export class BookService {
   async addBook(createBookInput: CreateBookInput): Promise<Book> {
     const { book_name, author_id } = createBookInput;
 
-    // Find the author
-    const author = await this.authorRepository.findOne({ where: { author_id: createBookInput.author_id } });
+    // 1. Find the author
+    const author = await this.authorRepository.findOne({
+      where: { author_id },
+    });
 
     if (!author) {
-      throw new NotFoundException(`Author with id ${author_id} not found`);
+      throw new Error('Author not found');
     }
 
+    // 2. Create new book
     const newBook = this.bookRepository.create({
-      book_name: book_name,
+      book_name,
       author,
     });
 
-    return this.bookRepository.save(newBook);
+    await this.bookRepository.save(newBook);
+
+    // 3. Update author’s totalBooks count
+    author.totalBooks += 1;
+    await this.authorRepository.save(author);
+
+    return newBook;
   }
 
   // Get all books

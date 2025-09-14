@@ -14,6 +14,7 @@ type Author {
   author_name: String!
   email: String!
   books: [Book!]
+  totalBooks: Int!
 }
 
 type Query {

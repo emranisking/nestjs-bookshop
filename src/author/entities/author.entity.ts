@@ -22,4 +22,11 @@ export class Author {
   @OneToMany(() => Book, (book) => book.author)
   books: Book[];
     id: any;
+
+
+    // 👇 Now stored in DB
+  @Field(() => Int)
+  @Column({ default: 0 })
+  totalBooks: number;
+
 }
