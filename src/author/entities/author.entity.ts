@@ -1,11 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Book } from 'src/book/entities/book.entity';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 @Entity()
 export class Author {
   @PrimaryGeneratedColumn()
+  @Field(() => Int)
   author_id: number;
 
   @Field()

@@ -9,6 +9,7 @@ type Book {
 }
 
 type Author {
+  author_id: Int!
   author_name: String!
   email: String!
   books: [Book!]
@@ -19,6 +20,7 @@ type Query {
   author(id: Int!): Author!
   books: [Book!]!
   book(id: Int!): Book!
+  booksByAuthor(author_id: Int!): [Book!]!
 }
 
 type Mutation {

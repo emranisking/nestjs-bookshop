@@ -51,4 +51,14 @@ export class BookService {
     }
     return book;
   }
+
+    async findByAuthor(author_id: number): Promise<Book[]> {
+    return this.bookRepository.find({
+      where: { author: { author_id: author_id } },
+      relations: ['author'], // include author info if needed
+      
+    });
+  }
+
+
 }

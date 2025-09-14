@@ -45,4 +45,11 @@ export class BookResolver {
       author_id,
     });
   }
+
+  @Query(() => [Book], { name: 'booksByAuthor' })
+  async getBooksByAuthor(
+    @Args('author_id', { type: () => Int }) author_id: number,
+  ): Promise<Book[]> {
+    return this.bookService.findByAuthor(author_id);
+  }
 }
